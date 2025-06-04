@@ -6,12 +6,12 @@ const cartReducer = (state, action) => {
 
         // tackle the existing product
 
-        let existingProduct = state.cart.find((curItem) => curItem.id == id + color
+        let existingProduct = state.cart.find((curItem) => curItem.id === id + color
         );
 
         if (existingProduct) {
             let updatedProduct = state.cart.map((curElem) => {
-                if (curElem.id == id + color) {
+                if (curElem.id === id + color) {
                     let newAmount = curElem.amount + amount;
 
                     if (newAmount >= curElem.max) {
@@ -108,21 +108,59 @@ const cartReducer = (state, action) => {
         return {
             ...state,
             cart: [],
-        }
+        };
     }
 
-    if (action.type == "CART_TOTAL_ITEM") {
-        let updatedItemVal = state.cart.reduce((initalVal, curElem) => {
-            let { amount } = curElem;
+    // if (action.type == "CART_TOTAL_ITEM") {
+    //     let updatedItemVal = state.cart.reduce((initalVal, curElem) => {
+    //         let { amount } = curElem;
 
-            initalVal = initalVal + amount;
-            return initalVal;
-        }, 0);
+    //         initalVal = initalVal + amount;
+    //         return initalVal;
+    //     }, 0);
+
+    //     return {
+    //         ...state,
+    //         total_item: updatedItemVal,
+    //     }
+    // }
+
+    // if (action.type === "CART_TOTAL_PRICE") {
+    //     let total_price = state.cart.reduce((initalVal, curElem) => {
+    //         let { price, amount } = curElem;
+
+    //         initalVal = initalVal + price * amount;
+
+    //         return initalVal;
+    //     }, 0);
+
+    //     return {
+    //         ...state,
+    //         total_price,
+    //     };
+    // }
+
+    if (action.type === "CART_ITEM_PRICE_TOTAL") {
+        let { total_item, total_price } = state.cart.reduce((accum, curElem) => {
+            let { price, amount } = curElem;
+
+            accum.total_item += amount;
+            accum.total_price += price * amount;
+
+            return accum;
+
+        },
+            {
+                total_item: 0,
+                total_price: 0,
+            }
+        );
 
         return {
             ...state,
-            total_item: updatedItemVal,
-        }
+            total_item,
+            total_price,
+        };
     }
 
     return state;
