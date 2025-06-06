@@ -4,12 +4,16 @@ import styled from 'styled-components'
 import { FiShoppingCart } from "react-icons/fi";
 import { CgClose, CgMenu } from "react-icons/cg";
 import { useCartContext } from '../Context/cart_context';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button } from '../Styles/Button';
 
 const Nav = () => {
 
     const [menuIcon, setMenuIcon] = useState();
 
     const { total_item } = useCartContext();
+
+    const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
 
     const Nav = styled.nav`
 
@@ -185,16 +189,43 @@ const Nav = () => {
                     <li>
                         <NavLink to="/contact" className="navbar-link" onClick={() => setMenuIcon(false)}>Contact</NavLink>
                     </li>
+                    {isAuthenticated && <p>{user.name}</p>}
+
+                    {isAuthenticated ? (
+                        <li>
+                            <Button
+                                onClick={() => logout({ returnTo: window.location.origin })}>
+                                Log Out
+                            </Button>
+                        </li>
+                    ) : (
+                        <li>
+                            <Button onClick={() => loginWithRedirect()}>Log In</Button>
+                        </li>
+                    )}
+
                     <li>
-                        <NavLink to="/cart" className="navbar-link cart-trolley--link" onClick={() => setMenuIcon(false)}><FiShoppingCart className="cart-trolley" />
+                        <NavLink to="/cart" className="navbar-link cart-trolley--link">
+                            <FiShoppingCart className="cart-trolley" />
                             <span className="cart-total--item"> {total_item} </span>
                         </NavLink>
                     </li>
                 </ul>
 
+
+                {/* two button for open and close of menu */}
+
                 <div className='mobile-navbar-btn'>
-                    <CgMenu name='menu-outliine' className='mobile-nav-icon' onClick={() => setMenuIcon(true)} />
-                    <CgClose name='close-outliine' className='mobile-nav-icon close-outline' onClick={() => setMenuIcon(false)} />
+                    <CgMenu
+                        name='menu-outliine'
+                        className='mobile-nav-icon'
+                        onClick={() => setMenuIcon(true)}
+                    />
+                    <CgClose
+                        name='close-outliine'
+                        className='mobile-nav-icon close-outline'
+                        onClick={() => setMenuIcon(false)}
+                    />
                 </div>
             </div>
         </Nav>
