@@ -11,6 +11,7 @@ import { GlobalStyle } from "./GlobalStyle";
 import { ThemeProvider } from "styled-components";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Address from "./components/Address";
 
 const App = () => {
 
@@ -51,6 +52,7 @@ const App = () => {
           <Route path="contact" element={<Contact />} />
           <Route path="/singleproduct/:id" element={<SingleProduct />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="/address" element={<Address />} />
           <Route path="*" element={<Error />} />
         </Routes>
         <Footer />

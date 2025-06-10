@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from "react-router";
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { FiShoppingCart } from "react-icons/fi";
@@ -8,6 +9,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from '../Styles/Button';
 
 const Nav = () => {
+    let navigate = useNavigate();
 
     const [menuIcon, setMenuIcon] = useState();
 
@@ -15,6 +17,10 @@ const Nav = () => {
 
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
 
+    const AuthLogout = async () => {
+        await logout();
+        navigate("/", { replace: true });
+    }
     const Nav = styled.nav`
 
     .navbar-lists {
@@ -194,13 +200,13 @@ const Nav = () => {
                     {isAuthenticated ? (
                         <li>
                             <Button
-                                onClick={() => logout({ returnTo: window.location.origin })}>
+                                onClick={AuthLogout}>
                                 Log Out
                             </Button>
                         </li>
                     ) : (
                         <li>
-                            <Button onClick={() => loginWithRedirect()}>Log In</Button>
+                            <Button onClick={() => loginWithRedirect({})}>Log In</Button>
                         </li>
                     )}
 

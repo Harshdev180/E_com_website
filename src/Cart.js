@@ -6,6 +6,7 @@ import { Button } from "./Styles/Button";
 import FormatPrice from './Helpers/FormatPrice';
 import { useAuth0 } from '@auth0/auth0-react';
 
+
 const Cart = () => {
 
   const { cart, clearCart, total_price, shipping_fee } = useCartContext();
@@ -20,7 +21,6 @@ const Cart = () => {
       </EmptyDiv>
     );
   }
-
 
   return (
     <Wrapper>
@@ -83,6 +83,15 @@ const Cart = () => {
             </div>
           </div>
         </div>
+
+        {isAuthenticated ? (
+          <div>
+            <NavLink to="/address">
+              <Button className="btn place-order">Place Order</Button></NavLink>
+          </div>
+        ) : (
+          <div>""</div>
+        )}
 
       </div>
     </Wrapper>
@@ -240,6 +249,12 @@ const Wrapper = styled.section`
     div p:last-child {
       font-weight: bold;
       color: ${({ theme }) => theme.colors.heading};
+    }
+
+    .place_order{
+      border: none;
+      background-color:rgb(249, 83, 0);
+      cursor: pointer;
     }
   }
 
