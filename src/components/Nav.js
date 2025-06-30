@@ -13,13 +13,14 @@ const Nav = () => {
 
     const [menuIcon, setMenuIcon] = useState();
 
-    const { total_item } = useCartContext();
+    const { total_item, clearCart } = useCartContext();
 
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
 
     const AuthLogout = async () => {
         await logout();
         navigate("/", { replace: true });
+        clearCart();
     }
     const Nav = styled.nav`
 

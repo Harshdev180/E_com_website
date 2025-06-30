@@ -1,143 +1,187 @@
 import styled from "styled-components";
 import { useState } from "react";
-
+import { useNavigate } from "react-router";
+import axios from "axios"
+import { useRazorpay } from "react-razorpay";
+import { useCartContext } from "../Context/cart_context";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Address = (myData) => {
-    const [upiMethod, setUpiMethod] = useState('');
-    const [upiId, setUpiId] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        pincode: '',
-        locality: '',
-        payment: 'UPI',
-    });
+  const navigate = useNavigate();
+  const { user } = useAuth0();
+  const { clearCart, total_price } = useCartContext();
+  const { isLoading, Razorpay } = useRazorpay();
+
+  const [formError, setFormError] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    pincode: '',
+    locality: '',
+    payment: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPaymentMethod((prev) => ({ ...prev, [name]: value }));
+    console.log('submitted', name)
+  };
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    const { name, email, phone, address, city, pincode, locality } = paymentMethod;
+
+    if (!name || !email || !phone || !address || !city || !pincode || !locality) {
+      setFormError("Please fill in all the required fields.");
+      return;
+    }
+    setFormError("");
+    clearCart();
+    // alert("Order placed successfully with Cash on Delivery.");
+    navigate("/cod");
+  };
 
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setPaymentMethod((prev) => ({ ...prev, [name]: value }));
-    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Order Placed:", paymentMethod);
-        alert("Order placed successfully!");
-    };
+  const handlePayment = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(total_price);
+      const response = await axios.post('http://localhost:5005/api/payment/create-orders', {
+        amount: total_price / 100 + 500,
+        currency: 'INR',
+      });
 
-    return (
-        <Wrapper>
-            <h2>Place Your Order</h2>
-            <form onSubmit={handleSubmit} >
-                <div className='grid grid-two-column'>
-                    <label>
-                        Full Name:
-                        <input
-                            type="text"
-                            name="name"
-                            value={paymentMethod.name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
+      console.log(response.data.data)
+      const { id, amount, currency } = response.data.data;
+      console.log("amount", response.data.amount)
+      const options = {
+        key: "rzp_test_8GmOdgEydSSvr0", // Replace with Razorpay Key ID
+        amount,
+        currency,
 
-                    <label>
-                        Email Address:
-                        <input
-                            type="email"
-                            name="email"
-                            value={paymentMethod.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
+        name: "My Store",
+        description: "Test Transaction",
+        order_id: id,
+        handler: (res) => {
+          alert(`Payment Successful! Payment ID: ${res.razorpay_payment_id}`);
+          clearCart();
+          console.log(res);
+        },
+        prefill: {
+          name: user,
+          email: paymentMethod.email,
+          contact: paymentMethod.phone,
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
 
-                    <label>
-                        Phone Number:
-                        <input
-                            type="tel"
-                            name="phone"
-                            value={paymentMethod.phone}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
+      console.log(options)
 
-                    <label>
-                        Shipping Address:
-                        <textarea
-                            name="address"
-                            value={paymentMethod.address}
-                            onChange={handleChange}
-                            required
-                        ></textarea>
-                    </label>
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.open();
+    } catch (err) {
+      console.error("Error initiating payment:", err);
+    }
+  };
 
-                    <label>
-                        Pincode:
-                        <input
-                            type="number"
-                            name="pincode"
-                            value={paymentMethod.pincode}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
+  return (
+    <Wrapper>
+      <h2>Place Your Order</h2>
+      <form onSubmit={handlePayment}>
+        <div className='grid grid-two-column'>
+          <label>
+            Full Name:
+            <input
+              type="text"
+              name="name"
+              value={paymentMethod.name}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
-                    <label>
-                        Locality:
-                        <input
-                            type="text"
-                            name="locality"
-                            value={paymentMethod.locality}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
+          <label>
+            Email Address:
+            <input
+              type="email"
+              name="email"
+              value={paymentMethod.email}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
-                    {/* Top-level options */}
-                    <select value={paymentMethod} onChange={(e) => {
-                        setPaymentMethod(e.target.value);
-                        setUpiMethod(''); // reset UPI method if switching
-                    }}>
-                        <option value="">-- Select Payment Method --</option>
-                        <option value="card">Credit/Debit Card</option>
-                        <option value="cod">Cash on Delivery</option>
-                        <option value="UPI">UPI</option>
-                    </select>
-                    {paymentMethod === 'UPI' && (
-                        <div style={{ marginTop: '1rem' }}>
-                            <label>Choose UPI App:</label>
-                            <select value={upiMethod} onChange={(e) => setUpiMethod(e.target.value)}>
-                                <option value="">-- Select UPI Option --</option>
-                                <option value="phonepe">PhonePe</option>
-                                <option value="gpay">GPay</option>
-                                <option value="paytm">Paytm</option>
-                                <option value="amazonpay">Amazon Pay</option>
-                                <option value="other">Other UPI</option>
-                            </select>
-                        </div>
-                    )}
-                    {upiMethod === 'other' && (
-                        <div style={{ marginTop: '1rem' }}>
-                            <label>Enter your UPI ID:</label>
-                            <input
-                                type="text"
-                                value={upiId}
-                                onChange={(e) => setUpiId(e.target.value)}
-                                placeholder="example@upi"
-                                required
-                            />
-                        </div>
-                    )}
-                </div>
-                <button type="submit">Place Order</button>
-            </form>
+          <label>
+            Phone Number:
+            <input
+              type="tel"
+              name="phone"
+              value={paymentMethod.phone}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
-        </Wrapper >
-    );
+          <label>
+            City:
+            <input
+              type="text"
+              name="city"
+              value={paymentMethod.city}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          <label className="address">
+            Shipping Address:
+            <textarea
+              name="address"
+              value={paymentMethod.address}
+              onChange={handleChange}
+              required
+              rows="6"
+            ></textarea>
+          </label>
+
+          <label>
+            Pincode:
+            <input
+              type="number"
+              name="pincode"
+              value={paymentMethod.pincode}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          <label>
+            Locality:
+            <input
+              type="text"
+              name="locality"
+              value={paymentMethod.locality}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          <div className="payment-buttons">
+            <button type="submit" disabled={isLoading}>Pay Now</button>
+            <button type="submit" onSubmit="/cod" onClick={handleButtonClick}>Cash on delivery</button>
+          </div>
+
+          {formError && <p style={{ color: 'red' }}>{formError}</p>}
+        </div>
+      </form>
+    </Wrapper >
+  );
 };
 
 const Wrapper = styled.section`
@@ -180,7 +224,27 @@ const Wrapper = styled.section`
     outline: none;
   }
 
+.address{
+    grid-column-end: span 2;
+    // border:2px solid red;
+    width:500px;
+}
+
+.payment-buttons {
+        display: contents;
+        grid-column: span 2;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+textarea {
+    width: 100%;
+    min-height: 100px; 
+    resize: vertical;
+}
+
   button {
+    margin-top:20px;
     padding: 12px;
     font-size: 16px;
     background-color: #007bff;
@@ -194,6 +258,98 @@ const Wrapper = styled.section`
       background-color: #0056b3;
     }
   }
+
+ .options {
+    margin-top:20px;
+    // width:100%;
+    // border: 2px solid red;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .card{
+    display:inline-flex;
+    flex-direction:column;
+    width:100%;
+  }
+    
+  .valid{
+    // border:2px solid red;
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap:25px;
+    font-size: 16px;
+    margin-top: 6px;
+    padding: 10px;
+    background-color:white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+  }
+
+   .valid label{
+    // border:2px solid blue;
+    font-size:16px;
+    font-weight:500;
+    display: flex;
+    flex-direction: row;
+    color: #333;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+   input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+       -webkit-appearance: none;
+        margin: 0;
+    }
+
+  input[type="number]{
+    -moz-appearance: textfield;
+  }
+
+   /* ✅ Responsive Design */
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .address,
+    .payment-buttons {
+      grid-column: span 1;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    form {
+      padding: 0;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    input,
+    textarea {
+      font-size: 13px;
+      padding: 8px;
+    }
+
+    button {
+      font-size: 15px;
+      padding: 10px;
+    }
+  }
+  
 `;
 
 export default Address;

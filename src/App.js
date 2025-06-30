@@ -12,6 +12,9 @@ import { ThemeProvider } from "styled-components";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Address from "./components/Address";
+import UpiPage from "./components/UpiPage";
+import CardPage from "./components/CardPage";
+import Cod from "./components/Cod";
 
 const App = () => {
 
@@ -53,6 +56,9 @@ const App = () => {
           <Route path="/singleproduct/:id" element={<SingleProduct />} />
           <Route path="cart" element={<Cart />} />
           <Route path="/address" element={<Address />} />
+          <Route path="/upipage" element={<UpiPage />} />
+          <Route path="/cardpage" element={<CardPage />} />
+          <Route path="/cod" element={<Cod />} />
           <Route path="*" element={<Error />} />
         </Routes>
         <Footer />

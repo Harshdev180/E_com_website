@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 import { useCartContext } from './Context/cart_context';
 import CartItem from './components/CartItem';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation, useNavigate } from 'react-router';
 import { Button } from "./Styles/Button";
 import FormatPrice from './Helpers/FormatPrice';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect } from 'react';
+import { useProductContext } from './Context/productContext';
 
 
 const Cart = () => {
@@ -13,6 +15,11 @@ const Cart = () => {
   // console.log(cart);
 
   const { isAuthenticated, user } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
+
+  const handleLogin = () => {
+    loginWithRedirect();
+  };
 
   if (cart.length === 0) {
     return (
@@ -82,17 +89,18 @@ const Cart = () => {
               </p>
             </div>
           </div>
+
+          {isAuthenticated ? (
+            <div>
+              <NavLink to="/address">
+                <Button className="btn place-order">Place Order</Button></NavLink>
+            </div>
+          ) : (
+            <div>
+              <Button className="btn place-order" onClick={handleLogin}>Place Order</Button>
+            </div>
+          )}
         </div>
-
-        {isAuthenticated ? (
-          <div>
-            <NavLink to="/address">
-              <Button className="btn place-order">Place Order</Button></NavLink>
-          </div>
-        ) : (
-          <div>""</div>
-        )}
-
       </div>
     </Wrapper>
   );
@@ -228,13 +236,15 @@ const Wrapper = styled.section`
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
-
+    
+  
     .order-total--subdata {
       border: 0.1rem solid #f0f0f0;
       display: flex;
       flex-direction: column;
       gap: 1.8rem;
       padding: 3.2rem;
+      border:1px solid black;
     }
     div {
       display: flex;
@@ -251,9 +261,9 @@ const Wrapper = styled.section`
       color: ${({ theme }) => theme.colors.heading};
     }
 
-    .place_order{
+    .place-order{
       border: none;
-      background-color:rgb(249, 83, 0);
+      margin-top:20px;
       cursor: pointer;
     }
   }
