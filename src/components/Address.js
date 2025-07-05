@@ -67,7 +67,7 @@ const Address = (myData) => {
         description: "Test Transaction",
         order_id: id,
         handler: (res) => {
-          alert(`Payment Successful! Payment ID: ${res.razorpay_payment_id}`);
+          navigate('/payConfirm');
           clearCart();
           console.log(res);
         },
@@ -185,170 +185,183 @@ const Address = (myData) => {
 };
 
 const Wrapper = styled.section`
-  max-width: 700px;
-  margin: 50px auto;
-  padding: 30px;
-  background: #f9f9f9;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+ max-width: 700px;
+margin: 50px auto;
+padding: 30px;
+background: #f9f9f9;
+border-radius: 12px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-  .grid{
-    gap:50px
-  }
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 2rem;
+}
 
-  h2 {
-    text-align: center;
-    margin-bottom: 25px;
-  }
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
 
-  label {
-    font-weight: 500;
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-    color: #333;
-  }
+label {
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #333;
+}
 
-  input, textarea, select {
-    padding: 10px;
-    font-size: 14px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-  }
+input,
+textarea,
+select {
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  width: 100%;
+}
 
-.address{
-    grid-column-end: span 2;
-    // border:2px solid red;
-    width:500px;
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.address {
+  grid-column: span 2;
+  width: 100%;
 }
 
 .payment-buttons {
-        display: contents;
-        grid-column: span 2;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-textarea {
-    width: 100%;
-    min-height: 100px; 
-    resize: vertical;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  grid-column: span 2;
+  margin-top: 1rem;
 }
 
+button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+// button:disabled {
+//   background-color: #ccc;
+//   cursor: not-allowed;
+// }
+
+.options {
+  margin-top: 20px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #333;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.valid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 25px;
+  font-size: 16px;
+  margin-top: 6px;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.valid label {
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #333;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ✅ Responsive Breakpoints */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .address,
+  .payment-buttons {
+    grid-column: span 1;
+  }
+
   button {
-    margin-top:20px;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s ease;
-
-    &:hover {
-      background-color: #0056b3;
-    }
+    width: 100%;
   }
 
- .options {
-    margin-top:20px;
-    // width:100%;
-    // border: 2px solid red;
-    font-weight: 500;
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-    color: #333;
+  h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 0;
   }
 
-  .card{
-    display:inline-flex;
-    flex-direction:column;
-    width:100%;
+  input,
+  textarea {
+    font-size: 13px;
+    padding: 8px;
   }
-    
-  .valid{
-    // border:2px solid red;
-    display: inline-flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap:25px;
-    font-size: 16px;
-    margin-top: 6px;
+
+  button {
+    font-size: 15px;
     padding: 10px;
-    background-color:white;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
   }
 
-   .valid label{
-    // border:2px solid blue;
-    font-size:16px;
-    font-weight:500;
-    display: flex;
-    flex-direction: row;
-    color: #333;
-    align-content: center;
-    justify-content: flex-start;
-    align-items: center;
+  .valid {
+    flex-direction: column;
+    gap: 10px;
   }
 
-   input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-       -webkit-appearance: none;
-        margin: 0;
-    }
-
-  input[type="number]{
-    -moz-appearance: textfield;
+  h2 {
+    font-size: 1.4rem;
   }
-
-   /* ✅ Responsive Design */
-  @media (max-width: 768px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
-
-    .address,
-    .payment-buttons {
-      grid-column: span 1;
-    }
-
-    button {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    form {
-      padding: 0;
-    }
-
-    h2 {
-      font-size: 1.4rem;
-    }
-
-    input,
-    textarea {
-      font-size: 13px;
-      padding: 8px;
-    }
-
-    button {
-      font-size: 15px;
-      padding: 10px;
-    }
-  }
+}
   
 `;
 

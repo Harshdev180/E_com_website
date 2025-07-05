@@ -19,8 +19,8 @@ const Nav = () => {
 
     const AuthLogout = async () => {
         await logout();
-        navigate("/", { replace: true });
         clearCart();
+        navigate("/", { replace: true });
     }
     const Nav = styled.nav`
 
@@ -212,7 +212,7 @@ const Nav = () => {
                     )}
 
                     <li>
-                        <NavLink to="/cart" className="navbar-link cart-trolley--link">
+                        <NavLink to="/cart" className="navbar-link cart-trolley--link" onClick={() => setMenuIcon(false)}>
                             <FiShoppingCart className="cart-trolley" />
                             <span className="cart-total--item"> {total_item} </span>
                         </NavLink>

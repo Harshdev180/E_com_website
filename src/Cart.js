@@ -25,6 +25,9 @@ const Cart = () => {
     return (
       <EmptyDiv>
         <h3>No Cart in Item</h3>
+        <NavLink to="/products">
+          <Button>Continue Shopping</Button>
+        </NavLink>
       </EmptyDiv>
     );
   }

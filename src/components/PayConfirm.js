@@ -1,16 +1,14 @@
 import React from 'react'
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-const Cod = () => {
+const PayConfirm = () => {
 
   const navigate = useNavigate();
-
   const changeTrack = () => {
     navigate("/trackOrder");
   }
-
   return (
     <Wrapper>
       <div className="thankyou-container">
@@ -18,7 +16,7 @@ const Cod = () => {
           <FaCheckCircle className="thankyou-icon" />
           <h1>Thank You for Your Order!</h1>
           <p>Your order has been placed successfully and will be delivered soon.</p>
-          <p><strong>Payment Mode:</strong> Cash on Delivery</p>
+          <p><strong>Payment Mode:</strong> Online Payment</p>
           <div className="thankyou-buttons">
             <button onClick={() => window.location.href = "/"}>Back to Home</button>
             <button onClick={changeTrack}>Track Order</button>
@@ -96,6 +94,11 @@ const Wrapper = styled.section`
 /* ============ RESPONSIVE MEDIA QUERIES ============ */
 
 @media screen and (max-width: 768px) {
+
+.thankyou-container{
+   min-height: 50vh;
+}
+
   .thankyou-card {
     padding: 30px 20px;
   }
@@ -114,6 +117,10 @@ const Wrapper = styled.section`
 }
 
 @media screen and (max-width: 480px) {
+
+.thankyou-container{
+   min-height: 50vh;
+}
   .thankyou-card {
     padding: 20px 16px;
   }
@@ -138,4 +145,4 @@ const Wrapper = styled.section`
 
 
 `;
-export default Cod
+export default PayConfirm

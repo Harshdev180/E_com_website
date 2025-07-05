@@ -15,6 +15,8 @@ import Address from "./components/Address";
 import UpiPage from "./components/UpiPage";
 import CardPage from "./components/CardPage";
 import Cod from "./components/Cod";
+import PayConfirm from "./components/PayConfirm";
+import TrackOrder from "./components/TrackOrder";
 
 const App = () => {
 
@@ -59,6 +61,8 @@ const App = () => {
           <Route path="/upipage" element={<UpiPage />} />
           <Route path="/cardpage" element={<CardPage />} />
           <Route path="/cod" element={<Cod />} />
+          <Route path="/payConfirm" element={<PayConfirm />} />
+          <Route path="/trackOrder" element={<TrackOrder />} />
           <Route path="*" element={<Error />} />
         </Routes>
         <Footer />

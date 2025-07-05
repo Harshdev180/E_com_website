@@ -1,4 +1,3 @@
-import React from 'react'
 import { useFilterContext } from '../Context/filter_context';
 import styled from 'styled-components';
 import { FaCheck } from 'react-icons/fa';
@@ -26,8 +25,6 @@ const FilterSection = () => {
   const categoryOnlyData = getUniqueData(all_products, "category");
   const companyData = getUniqueData(all_products, "company");
   const colorsData = getUniqueData(all_products, "colors");
-
-
 
   return (
     <Wrapper>
@@ -146,13 +143,15 @@ const Wrapper = styled.section`
 
   h3 {
     padding: 2rem 0;
-    font-size: bold;
+    font-weight: bold;  
+    font-size: 1.6rem;
   }
 
   .filter-search {
     input {
       padding: 0.6rem 1rem;
-      width: 80%;
+      width: 100%;     
+      max-width: 400px;
     }
   }
 
@@ -168,6 +167,8 @@ const Wrapper = styled.section`
         background-color: ${({ theme }) => theme.colors.white};
         text-transform: capitalize;
         cursor: pointer;
+        font-size: 1.4rem;
+        transition: 0.3s ease;
 
         &:hover {
           color: ${({ theme }) => theme.colors.btn};
@@ -182,15 +183,20 @@ const Wrapper = styled.section`
   }
 
   .filter-company--select {
-    padding: 0.3rem 1.2rem;
+    padding: 0.6rem 1.2rem;
     font-size: 1.6rem;
     color: ${({ theme }) => theme.colors.text};
     text-transform: capitalize;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: ${({ theme }) => theme.colors.white};
   }
 
   .filter-color-style {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
   }
 
   .color-all--style {
@@ -198,17 +204,19 @@ const Wrapper = styled.section`
     text-transform: capitalize;
     border: none;
     cursor: pointer;
+    font-size: 1.4rem;
   }
+
   .btnStyle {
     width: 2rem;
     height: 2rem;
     background-color: #000;
     border-radius: 50%;
-    margin-left: 1rem;
     border: none;
     outline: none;
     opacity: 0.5;
     cursor: pointer;
+    transition: opacity 0.3s ease;
 
     &:hover {
       opacity: 1;
@@ -225,11 +233,10 @@ const Wrapper = styled.section`
   }
 
   .filter_price {
-    input {
+    input[type="range"] {
       margin: 0.5rem 0 1rem 0;
-      padding: 0;
-      box-shadow: none;
       cursor: pointer;
+      width: 100%;
     }
   }
 
@@ -237,11 +244,45 @@ const Wrapper = styled.section`
     display: flex;
     align-items: center;
     gap: 1rem;
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    label {
+      font-size: 1.4rem;
+    }
   }
 
-  .filter-clear .btn {
-    background-color: #ec7063;
-    color: #000;
+  .filter-clear {
+    .btn {
+      background-color: #ec7063;
+      color: #000;
+      padding: 0.8rem 1.2rem;
+      border-radius: 6px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      border: none;
+    }
+  }
+
+  /* ✅ Mobile responsive adjustments */
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+
+    h3 {
+      font-size: 1.4rem;
+    }
+
+    .filter-search input,
+    .filter-company--select {
+      width: 100%;
+    }
+
+    .filter-color-style {
+      justify-content: flex-start;
+    }
   }
 `;
 
